@@ -96,7 +96,7 @@ def draw_grid(screen, agent_pos, score):
     pygame.draw.circle(screen, (0, 0, 255), (ac * block_size + 25, ar * block_size + 65), 15)
 
     score_txt = font.render(f"Pontuação: {int(score)}", True, (255, 255, 255))
-    screen.blit(score_txt, (10, 5))
+    screen.blit(score_txt, (10, 5))   
 
 def main():
     train()
