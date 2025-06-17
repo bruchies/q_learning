@@ -5,7 +5,6 @@ import time
 
 ROWS, COLS = 10, 12
 ACTIONS = ['up', 'down', 'left', 'right']
-ALPHA = 0.1
 GAMMA = 0.9
 EPSILON = 0.3
 EPISODES = 1000
@@ -58,9 +57,12 @@ def train():
             nr, nc = next_state
             reward = reward_matrix[nr][nc]
             best_next = np.max(Q[nr][nc])
-            Q[r][c][ACTIONS.index(action)] += ALPHA * (
-                reward + GAMMA * best_next - Q[r][c][ACTIONS.index(action)]
+            #Q[r][c][ACTIONS.index(action)] += ALPHA * (
+            #    reward + GAMMA * best_next - Q[r][c][ACTIONS.index(action)]
+            Q[r][c][ACTIONS.index(action)] = (
+                reward + GAMMA * best_next
             )
+            
             state = next_state
 
 def draw_grid(screen, agent_pos, score):
@@ -113,7 +115,7 @@ def main():
         screen.fill((0, 0, 0))
         draw_grid(screen, agent_pos, score)
         pygame.display.flip()
-        clock.tick(3)
+        clock.tick(15)
 
         if agent_pos != terminal_state:
             action = choose_action(agent_pos)
