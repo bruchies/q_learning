@@ -98,12 +98,21 @@ def draw_grid(screen, agent_pos, score):
     pygame.draw.circle(screen, (0, 0, 255), (ac * block_size + 25, ar * block_size + 65), 15)
 
     score_txt = font.render(f"Pontuação: {int(score)}", True, (255, 255, 255))
-    screen.blit(score_txt, (10, 5))   
+    screen.blit(score_txt, (10, 5)) 
+
+    # tabela q no lado direito
+    for r in range(ROWS):
+        for c in range(COLS):
+            if reward_matrix[r][c] == -999:
+                continue
+            q_value = np.max(Q[r][c])
+            q_txt = font.render(f"Q({r},{c})={q_value:.1f}", True, (255, 255, 255))
+            screen.blit(q_txt, (COLS * 50 + 20, r * 50 + 45))
 
 def main():
     train()
     pygame.init()
-    screen = pygame.display.set_mode((COLS * 50, ROWS * 50 + 40))
+    screen = pygame.display.set_mode(((COLS + 6) * 50, ROWS * 50 + 40))
     pygame.display.set_caption("Q-Learning - Mapa em T")
     clock = pygame.time.Clock()
 
