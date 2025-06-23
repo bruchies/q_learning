@@ -13,7 +13,7 @@ def main():
     score = 0
     episode = 0
     view_mode = 'arrows'
-    prev_view_mode = 'arrows'  # Para alternar de volta ao modo anterior
+    prev_view_mode = 'arrows' 
 
     running = True 
     while running:
@@ -49,7 +49,6 @@ def main():
             update_q(state, action, reward, next_state)
             score += reward
             
-            # Incrementar contador de visitas na nova posição
             visit_frequency[next_state[0]][next_state[1]] += 1
             
             state = next_state
