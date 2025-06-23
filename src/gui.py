@@ -29,7 +29,7 @@ def get_optimal_path():
 
 def draw_grid(screen, agent_pos, score, view_mode):
     block_size = 50
-    font = pygame.font.SysFont(None, 24)
+    font = pygame.font.SysFont("Arial Unicode MS", 24)
 
     if view_mode == 'heatmap':
         visit_values = [visit_frequency[r][c] for r in range(ROWS) for c in range(COLS) if reward_matrix[r][c] > -999]
@@ -41,28 +41,29 @@ def draw_grid(screen, agent_pos, score, view_mode):
         for c in range(COLS):
             reward = reward_matrix[r][c]
             rect = pygame.Rect(c * block_size, r * block_size + 40, block_size, block_size)
-            color = (255, 255, 255)
+            color = (248,229,239)
 
             if reward == -999: color = (80, 80, 80)
-            elif reward == -100: color = (0, 0, 0)
-            elif (r, c) == terminal_state: color = (0, 255, 0)
-            elif (r, c) == initial_state: color = (200, 50, 50)
+            elif reward == -100: color = (22,12,17)
+            elif (r, c) == terminal_state: color = (80,243,142)
+            elif (r, c) == initial_state: color = (238,93,108)
             elif view_mode == 'heatmap':
                 visit_count = visit_frequency[r][c]
                 norm_visits = (visit_count - min_visits) / delta
-                red = int(255 * norm_visits)
-                blue = int(255 * (1 - norm_visits))
-                color = (red, 0, blue)
+                start_color = np.array([199,251,245])
+                end_color = np.array([252,120,183])
+                interpolated = start_color + (end_color - start_color) * norm_visits
+                color = tuple(interpolated.astype(int))
             # No modo optimal_path, apenas desenhe o grid normalmente
 
             pygame.draw.rect(screen, color, rect)
-            pygame.draw.rect(screen, (150, 100, 0), rect, 1)
+            pygame.draw.rect(screen, (154,88,125), rect, 1)
 
-            if view_mode == 'arrows' and reward > -999 and (r, c) != terminal_state:
+            '''if view_mode == 'arrows' and reward > -999 and (r, c) != terminal_state:
                 best_action = ACTIONS[np.argmax(Q[r][c])]
-                arrow = {'up': '↑', 'down': '↓', 'left': '←', 'right': '→'}[best_action]
+                arrow = {'up': '^', 'down': 'v', 'left': '<', 'right': '>'}[best_action]
                 txt = font.render(arrow, True, (0, 0, 0))
-                screen.blit(txt, (c * block_size + 18, r * block_size + 55))
+                screen.blit(txt, (c * block_size + 18, r * block_size + 55))'''
 
     # Desenhar o caminho ótimo no modo heatmap ou optimal_path
     if view_mode == 'heatmap' or view_mode == 'optimal_path':
@@ -74,23 +75,23 @@ def draw_grid(screen, agent_pos, score, view_mode):
             y1 = r1 * block_size + 40 + block_size//2
             x2 = c2 * block_size + block_size//2
             y2 = r2 * block_size + 40 + block_size//2
-            pygame.draw.line(screen, (255, 255, 0), (x1, y1), (x2, y2), 6)
+            pygame.draw.line(screen, (147,135,247), (x1, y1), (x2, y2), 6)
 
     ar, ac = agent_pos
-    pygame.draw.circle(screen, (0, 0, 255), (ac * block_size + 25, ar * block_size + 65), 15)
+    pygame.draw.circle(screen, (106,13,131), (ac * block_size + 25, ar * block_size + 65), 15)
 
-    score_txt = font.render(f"Pontuação: {int(score)}", True, (255, 255, 255))
+    score_txt = font.render(f"Pontuação: {int(score)}", True, (250,236,244))
     screen.blit(score_txt, (10, 5)) 
 
     # Adicionar legenda para o modo
     if view_mode == 'heatmap':
-        legend_txt = font.render("Heatmap: Frequência de Visitas + Caminho Ótimo (amarelo)", True, (255, 255, 255))
+        legend_txt = font.render("Heatmap: Frequência de Visitas + Caminho Ótimo (roxo)", True, (250,236,244))
         screen.blit(legend_txt, (200, 5))
     elif view_mode == 'optimal_path':
-        legend_txt = font.render("Caminho Ótimo (amarelo) - Tecla C", True, (255, 255, 0))
+        legend_txt = font.render("Caminho Ótimo (roxo) - Tecla C", True, (255,0,193))
         screen.blit(legend_txt, (200, 5))
     else:
-        legend_txt = font.render("Modo: Setas de Direção", True, (255, 255, 255))
+        legend_txt = font.render("Modo: Setas de Direção", True, (250,236,244))
         screen.blit(legend_txt, (200, 5))
 
     # Q-table ao lado
@@ -105,5 +106,5 @@ def draw_grid(screen, agent_pos, score, view_mode):
         col_idx = i // col_len
         row_idx = i % col_len
         q_value = np.max(Q[r][c])
-        q_txt = q_font.render(f"Q({r},{c})={q_value:.1f}", True, (255, 255, 255))
+        q_txt = q_font.render(f"Q({r},{c})={q_value:.1f}", True, (250,236,244))
         screen.blit(q_txt, (q_table_x_start + col_idx * 100, q_table_y_start + row_idx * text_height))
