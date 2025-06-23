@@ -4,10 +4,13 @@ ROWS, COLS = 10, 12
 ACTIONS = ['up', 'down', 'left', 'right']
 GAMMA = 0.9
 EPSILON = 0.3
-EPISODES = 1000
+EPISODES = 2000
 
 initial_state = (9, 4)
 terminal_state = (4, 11)
+
+# Matriz para rastrear a frequência de visitas do agente
+visit_frequency = np.zeros((ROWS, COLS))
 
 reward_matrix = np.array([
     [1, 1, 1, 1, -100, 1, 1, 1, 1, 1, 1, -100],

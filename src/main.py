@@ -1,5 +1,5 @@
 import pygame
-from config import EPISODES, reward_matrix, initial_state, terminal_state
+from config import EPISODES, reward_matrix, initial_state, terminal_state, visit_frequency
 from qlearning import choose_action, get_next_state, update_q
 from gui import draw_grid
 
@@ -13,14 +13,25 @@ def main():
     score = 0
     episode = 0
     view_mode = 'arrows'
+    prev_view_mode = 'arrows'  # Para alternar de volta ao modo anterior
 
-    running = True
+    running = True 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                view_mode = 'heatmap' if view_mode == 'arrows' else 'arrows'
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    if view_mode == 'arrows':
+                        view_mode = 'heatmap'
+                    elif view_mode == 'heatmap':
+                        view_mode = 'arrows'
+                if event.key == pygame.K_c:
+                    if view_mode != 'optimal_path':
+                        prev_view_mode = view_mode
+                        view_mode = 'optimal_path'
+                    else:
+                        view_mode = prev_view_mode
 
         if episode >= EPISODES:
             screen.fill((0, 0, 0))
@@ -37,6 +48,10 @@ def main():
             reward = reward_matrix[next_state[0]][next_state[1]]
             update_q(state, action, reward, next_state)
             score += reward
+            
+            # Incrementar contador de visitas na nova posição
+            visit_frequency[next_state[0]][next_state[1]] += 1
+            
             state = next_state
         else:
             state = initial_state
@@ -44,7 +59,7 @@ def main():
             episode += 1
 
         pygame.display.flip()
-        clock.tick(120)
+        clock.tick(1000)
 
     pygame.quit()
 
